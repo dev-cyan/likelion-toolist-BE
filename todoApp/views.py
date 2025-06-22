@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import ParseError, NotFound
 from .models import Todo, User
 from .serializers import TodoSerializer
+from rest_framework import status
 
 # Create your views here.
 class Todos(APIView):
@@ -43,4 +44,113 @@ class Todos(APIView):
 
         # 직렬화
         serializer = TodoSerializer(todos, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self, request, user_id):
+        user = self.get_user(user_id)
+
+        serializer = TodoSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            serializer.save(user=user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class Todos_Update_Delete(APIView):
+
+    def get_user(self, user_id):
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            raise NotFound("유저를 찾을 수 없습니다.")
+        return user
+    
+    def get_todo(self, todo_id):
+        try:
+            todo = Todo.objects.get(id=todo_id)
+        except Todo.DoesNotExist:
+            raise NotFound("To Do를 찾을 수 없습니다.")
+        return todo
+        
+    def patch(self, request, user_id, todo_id):
+        user = self.get_user(user_id)
+        
+        todo = self.get_todo(todo_id)
+
+        serializer = TodoSerializer(todo, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save(user=user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, user_id, todo_id):
+        user = self.get_user(user_id)
+        
+        todo = self.get_todo(todo_id)
+
+        serializer = TodoSerializer(todo, data=request.data, partial=True)
+
+        todo.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+class Todos_Check(APIView):
+
+    def get_user(self, user_id):
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            raise NotFound("유저를 찾을 수 없습니다.")
+        return user
+    
+    def get_todo(self, todo_id):
+        try:
+            todo = Todo.objects.get(id=todo_id)
+        except Todo.DoesNotExist:
+            raise NotFound("To Do를 찾을 수 없습니다.")
+        return todo
+    
+    def patch(self, request, user_id, todo_id):
+        user = self.get_user(user_id)
+        
+        todo = self.get_todo(todo_id)
+
+        serializer = TodoSerializer(todo, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save(user=user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class Todos_Reviews(APIView):
+
+    def get_user(self, user_id):
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            raise NotFound("유저를 찾을 수 없습니다.")
+        return user
+    
+    def get_todo(self, todo_id):
+        try:
+            todo = Todo.objects.get(id=todo_id)
+        except Todo.DoesNotExist:
+            raise NotFound("To Do를 찾을 수 없습니다.")
+        return todo
+    
+    def patch(self, request, user_id, todo_id):
+        user = self.get_user(user_id)
+        
+        todo = self.get_todo(todo_id)
+
+        serializer = TodoSerializer(todo, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save(user=user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

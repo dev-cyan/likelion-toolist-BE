@@ -189,6 +189,8 @@ class Checked(APIView):
 
         todos = Todo.objects.filter(user=user)
 
+        todos = todos.filter(is_checked=True)
+
         serializer = TodoSerializer(todos, many=True)
        
         return Response(serializer.data, status=status.HTTP_200_OK)

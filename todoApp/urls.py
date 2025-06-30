@@ -23,6 +23,6 @@ urlpatterns = [
     path('<int:user_id>/<int:todo_id>/check/', views.Todos_Check.as_view()),
     path('<int:user_id>/<int:todo_id>/reviews/', views.Todos_Reviews.as_view()),
     path('<int:user_id>/search/<str:keyword>/', views.Search.as_view()),
-    path('<int:user_id>/search/checked/', views.Checked.as_view()),
-    path('<int:user_id>/search/unchecked/', views.Unchecked.as_view()),
+    path('<int:user_id>/checked/', views.Checked.as_view()),
+    path('<int:user_id>/unchecked/', views.Unchecked.as_view()),
 ]

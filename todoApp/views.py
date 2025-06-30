@@ -169,7 +169,7 @@ class Search(APIView):
         
         todos = Todo.objects.filter(user=user)
 
-        if keyword:
+        if keyword.strip():
             todos = todos.filter(content__icontains=keyword)
 
         serializer = TodoSerializer(todos, many=True)

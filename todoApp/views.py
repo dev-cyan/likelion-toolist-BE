@@ -154,3 +154,24 @@ class Todos_Reviews(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class Search(APIView):
+
+    def get_user(self, user_id):
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            raise NotFound("유저를 찾을 수 없습니다.")
+        return user
+    
+    def get(self, request, user_id, keyword):
+        user = self.get_user(user_id)
+        
+        todos = Todo.objects.filter(user=user)
+
+        if keyword:
+            todos = todos.filter(content__icontains=keyword)
+
+        serializer = TodoSerializer(todos, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+

@@ -187,9 +187,12 @@ class Checked(APIView):
     def get(self, request, user_id):
         user = self.get_user(user_id)
 
-        todos = Todo.objects.filter(user=user, is_checked=True)
+        todos = Todo.objects.filter(user=user)
+
+        todos = todos.filter(is_checked=True)
 
         serializer = TodoSerializer(todos, many=True)
+       
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class Unchecked(APIView):
@@ -204,7 +207,10 @@ class Unchecked(APIView):
     def get(self, request, user_id):
         user = self.get_user(user_id)
 
-        todos = Todo.objects.filter(user=user, is_checked=True)
+        todos = Todo.objects.filter(user=user)
+
+        todos = todos.filter(is_checked=False)
 
         serializer = TodoSerializer(todos, many=True)
+
         return Response(serializer.data, status=status.HTTP_200_OK)
